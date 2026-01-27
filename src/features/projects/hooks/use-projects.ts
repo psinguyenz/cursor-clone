@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from "convex/react"
 import { api } from "../../../../convex/_generated/api"
 import { Id } from "../../../../convex/_generated/dataModel";
-import { useAuth } from "@clerk/nextjs";
 
 // return project by id
 export const useProject = (projectId: Id<"projects">) => {
@@ -43,13 +42,13 @@ export const useCreateProject = () => {
 };
 
 // ADVANCED: rename the project
-export const useRenameProject = (projectId: Id<"projects">) => {
+export const useRenameProject = () => {
     return useMutation(api.projects.rename).withOptimisticUpdate((localStore, args) => {
-            const existingProject = localStore.getQuery(api.projects.getById, {id: projectId});
+            const existingProject = localStore.getQuery(api.projects.getById, {id: args.id});
 
             // rename it
             if (existingProject !== undefined && existingProject !== null) {
-                localStore.setQuery(api.projects.getById, {id: projectId}, {
+                localStore.setQuery(api.projects.getById, {id: args.id}, {
                     ...existingProject,
                     name: args.name,
                     updatedAt: Date.now(),
