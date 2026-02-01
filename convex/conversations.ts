@@ -26,7 +26,7 @@ export const create = mutation({
             title: args.title,
             updatedAt: Date.now(),
         });
-          
+
         return conversationId;
     },
 });
@@ -70,11 +70,11 @@ export const getByProject = query({
         if (!project) {
             throw new Error("Project not found");
         }
-    
+
         if (project.ownerId !== identity.subject) {
             throw new Error("Unauthorized to access this project");
         }
-    
+
         return await ctx.db
             .query("conversations")
             .withIndex("by_project", (q) => q.eq("projectId", args.projectId))
@@ -97,18 +97,18 @@ export const getMessages = query({
         }
 
         const project = await ctx.db.get("projects", conversation.projectId);
-    
+
         if (!project) {
             throw new Error("Project not found");
         }
-    
+
         if (project.ownerId !== identity.subject) {
             throw new Error("Unauthorized to access this project");
         }
-    
+
         return await ctx.db
             .query("messages")
-            .withIndex("by_conversation", (q) => 
+            .withIndex("by_conversation", (q) =>
                 q.eq("conversationId", args.conversationId)
             )
             .order("asc")
