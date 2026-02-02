@@ -9,6 +9,16 @@ interface PreviewTerminalProps {
     output: string;
 }
 
+/**
+ * Render an xterm.js terminal inside a container and stream the provided output into it.
+ *
+ * The component mounts a read-only terminal and sizes it to its container. On mount it writes any
+ * initial `output`; on subsequent prop updates it appends only the newly added text and clears the
+ * terminal if the new `output` is shorter than the previously written content. The terminal is
+ * re-fit on resize and disposed when the component unmounts.
+ *
+ * @param output - Full terminal content to display; the component will write the initial value on mount and then append or clear based on subsequent updates
+ */
 export function PreviewTerminal({ output }: PreviewTerminalProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const terminalRef = useRef<Terminal>(null);
