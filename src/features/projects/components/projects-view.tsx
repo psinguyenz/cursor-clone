@@ -11,6 +11,7 @@ import { useCreateProject } from "../hooks/use-projects";
 import { adjectives, animals, colors, uniqueNamesGenerator } from "unique-names-generator"
 import { useEffect, useState } from "react";
 import { ProjectsCommandDialog } from "./projects-command-dialog";
+import { ImportGithubDialog } from "./import-github-dialog";
 
 const font = Poppins({
     subsets: ["latin"],
@@ -20,6 +21,7 @@ const font = Poppins({
 export const ProjectsView = () => {
     const createProject = useCreateProject();
     const [commandDialogOpen, setCommandDialogOpen] = useState(false);
+    const [importDialogOpen, setImportDialogOpen] = useState(false);
 
     // equivalent to viewall button (onViewAll) in src/features/projects/components/projects-list.tsx
     useEffect(() => {
@@ -29,6 +31,11 @@ export const ProjectsView = () => {
                     e.preventDefault();
                     setCommandDialogOpen(true);
                 }
+
+                if (e.key === "i") {
+                    e.preventDefault();
+                    setImportDialogOpen(true);
+                }
             }
         }
         document.addEventListener("keydown", handleKeyDown);
@@ -37,9 +44,14 @@ export const ProjectsView = () => {
 
     return (
         <>
-            <ProjectsCommandDialog 
-                open = {commandDialogOpen}
+            <ProjectsCommandDialog
+                open={commandDialogOpen}
                 onOpenChange={setCommandDialogOpen}
+            />
+
+            <ImportGithubDialog
+                open={importDialogOpen}
+                onOpenChange={setImportDialogOpen}
             />
 
             <div className="min-h-screen bg-sidebar flex flex-col items-center justify-center p-6 md:p-16">
@@ -72,7 +84,7 @@ export const ProjectsView = () => {
                                         length: 3,
                                     });
 
-                                    createProject({name: projectName});
+                                    createProject({ name: projectName });
                                 }}
                                 className="h-full items-start justify-start p-4 bg-background border 
                                 flex flex-col gap-6 rounded-none"
@@ -93,7 +105,7 @@ export const ProjectsView = () => {
 
                             <Button
                                 variant="outline"
-                                onClick={() => {}}
+                                onClick={() => { setImportDialogOpen(true) }}
                                 className="h-full items-start justify-start p-4 bg-background border 
                                 flex flex-col gap-6 rounded-none"
                             >
