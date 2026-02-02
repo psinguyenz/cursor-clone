@@ -40,7 +40,7 @@ export const importGithubRepo = inngest.createFunction(
 
         const internalKey = process.env.CONVEX_INTERNAL_KEY;
         if (!internalKey) {
-            throw new NonRetriableError("POLARIS_CONVEX_INTERNAL_KEY is not configured");
+            throw new NonRetriableError("CONVEX_INTERNAL_KEY is not configured");
         };
 
         const octokit = new Octokit({ auth: githubToken });
