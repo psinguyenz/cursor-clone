@@ -19,6 +19,24 @@ export const useConversations = (projectId: Id<"projects">) => {
 };
 
 export const useCreateConversation = () => {
-    return useMutation(api.conversations.create);
-    // TODO: Add optimistic mutation
+    // Optimistic mutation (instantly update the UI)
+    return useMutation(api.conversations.create).withOptimisticUpdate((localStore, args) => {
+        const existingConversations = localStore.getQuery(api.conversations.getByProject, { projectId: args.projectId });
+
+        if (existingConversations !== undefined) {
+            const now = Date.now();
+            const newConversation = {
+                _id: crypto.randomUUID() as Id<"conversations">,
+                _creationTime: now,
+                projectId: args.projectId,
+                title: args.title,
+                createdAt: now,
+                updatedAt: now,
+            };
+
+            localStore.setQuery(api.conversations.getByProject, {
+                projectId: args.projectId
+            }, [newConversation, ...existingConversations]);
+        }
+    });
 };

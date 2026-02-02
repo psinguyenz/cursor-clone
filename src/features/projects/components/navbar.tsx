@@ -19,9 +19,9 @@ const font = Poppins({
     weight: ["400", "500", "600", "700"],
 })
 
-export const Navbar = ({projectId}: {projectId: Id<"projects">}) => {
+export const Navbar = ({ projectId }: { projectId: Id<"projects"> }) => {
     const project = useProject(projectId);
-    const renameProject = useRenameProject(projectId);
+    const renameProject = useRenameProject();
     const [isRenaming, setIsRenaming] = useState(false);
     const [name, setName] = useState("");
 
@@ -40,7 +40,7 @@ export const Navbar = ({projectId}: {projectId: Id<"projects">}) => {
         if (!trimmedName || trimmedName === project.name) return;
 
         // this will send a request to Convex's Server for a mutation
-        renameProject({ id: projectId, name: trimmedName});
+        renameProject({ id: projectId, name: trimmedName });
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -61,7 +61,7 @@ export const Navbar = ({projectId}: {projectId: Id<"projects">}) => {
                             <BreadcrumbLink className="flex items-center gap-1.5" asChild>
                                 <Button variant="ghost" className="w-fit! p-1.5! h-7!" asChild>
                                     <Link href="/">
-                                        <Image src="/logo.svg" alt="Logo" width={20} height={20}/>
+                                        <Image src="/logo.svg" alt="Logo" width={20} height={20} />
                                         <span className={cn("text-sm font-medium", font.className)}>
                                             Polaris
                                         </span>
@@ -70,18 +70,18 @@ export const Navbar = ({projectId}: {projectId: Id<"projects">}) => {
                             </BreadcrumbLink>
                         </BreadcrumbItem>
 
-                        <BreadcrumbSeparator className="ml-0! mr-1"/>
+                        <BreadcrumbSeparator className="ml-0! mr-1" />
 
                         {/* Project's name item */}
                         <BreadcrumbItem>
                             {isRenaming ? (
-                                <input 
+                                <input
                                     autoFocus
                                     type="text"
                                     value={name}
 
                                     // continuously update the name (Local State) but haven't saved in database
-                                    onChange={(e) => setName(e.target.value)} 
+                                    onChange={(e) => setName(e.target.value)}
                                     onFocus={(e) => e.currentTarget.select()}
                                     onBlur={handleSubmit}
 
@@ -104,21 +104,21 @@ export const Navbar = ({projectId}: {projectId: Id<"projects">}) => {
                 {project?.importStatus === "importing" ? (
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <LoaderIcon className="size-4 text-muted-foreground animate-spin"/>
+                            <LoaderIcon className="size-4 text-muted-foreground animate-spin" />
                         </TooltipTrigger>
                         <TooltipContent>Importing...</TooltipContent>
                     </Tooltip>
                 ) : (
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <CloudCheckIcon className="size-4 text-muted-foreground"/>
+                            <CloudCheckIcon className="size-4 text-muted-foreground" />
                         </TooltipTrigger>
                         <TooltipContent>
                             {/* if we have project.updatedAt, we get DistanceToNow otherwise let it unknown */}
-                            Saved{" "} 
+                            Saved{" "}
                             {project?.updatedAt ? formatDistanceToNow(
-                                project.updatedAt, 
-                                {addSuffix: true}
+                                project.updatedAt,
+                                { addSuffix: true }
                             ) : "unknown"}
                         </TooltipContent>
                     </Tooltip>

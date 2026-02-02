@@ -22,8 +22,8 @@ export const Tree = ({
     const [isRenaming, setIsRenaming] = useState(false)
     const [creating, setCreating] = useState<"file" | "folder" | null>(null);
 
-    const renameFIle = useRenameFile();
-    const deleteFile = useDeleteFile();
+    const renameFile = useRenameFile({ projectId, parentId: item._id });
+    const deleteFile = useDeleteFile({ projectId, parentId: item._id });
     const createFile = useCreateFile();
     const createFolder = useCreateFolder();
 
@@ -42,16 +42,16 @@ export const Tree = ({
             return;
         }
 
-        renameFIle({ id: item._id, newName});
+        renameFile({ id: item._id, newName });
     };
 
-    const handleCreate = (name:string) => {
+    const handleCreate = (name: string) => {
         setCreating(null);
 
         if (creating === "file") {
-            createFile({projectId, name, content: "", parentId: item._id});
+            createFile({ projectId, name, content: "", parentId: item._id });
         } else {
-            createFolder({projectId, name, parentId: item._id})
+            createFolder({ projectId, name, parentId: item._id })
         }
     }
 
@@ -66,7 +66,7 @@ export const Tree = ({
 
         if (isRenaming) {
             return (
-                <RenameInput 
+                <RenameInput
                     type="file"
                     defaultValue={fileName}
                     level={level}
@@ -81,15 +81,15 @@ export const Tree = ({
                 item={item}
                 level={level}
                 isActive={isActive}
-                onClick={() => openFile(item._id, {pinned:false})}
-                onDoubleClick={() => openFile(item._id, {pinned:true})}
+                onClick={() => openFile(item._id, { pinned: false })}
+                onDoubleClick={() => openFile(item._id, { pinned: true })}
                 onRename={() => setIsRenaming(true)}
-                onDelete = {() => {
-                    closeTab(item._id); 
+                onDelete={() => {
+                    closeTab(item._id);
                     deleteFile({ id: item._id })
-                }} 
+                }}
             >
-                <FileIcon fileName={fileName} autoAssign className="size-4"/>
+                <FileIcon fileName={fileName} autoAssign className="size-4" />
                 <span className="truncate text-sm">{fileName}</span>
             </TreeItemWrapper>
         )
@@ -100,10 +100,10 @@ export const Tree = ({
     const folderRender = (
         <>
             <div className="flex items-center gap-0.5">
-                <ChevronRightIcon 
+                <ChevronRightIcon
                     className={cn("size-4 shrink-0 text-muted-foreground", isOpen && "rotate-90")}
                 />
-                <FolderIcon folderName={folderName} className="size-4"/>
+                <FolderIcon folderName={folderName} className="size-4" />
             </div>
             <span className="truncate text-sm">{folderName}</span>
         </>
@@ -121,15 +121,15 @@ export const Tree = ({
                 </button>
                 {isOpen && (
                     <>
-                        {folderContents === undefined && <LoadingRow level={level + 1}/>}
-                        <CreateInput 
+                        {folderContents === undefined && <LoadingRow level={level + 1} />}
+                        <CreateInput
                             type={creating}
                             level={level + 1}
                             onSubmit={handleCreate}
                             onCancel={() => setCreating(null)}
                         />
                         {folderContents?.map((subItem) => (
-                            <Tree 
+                            <Tree
                                 key={subItem._id}
                                 item={subItem}
                                 level={level + 1}
@@ -145,7 +145,7 @@ export const Tree = ({
     if (isRenaming) {
         return (
             <>
-                <RenameInput 
+                <RenameInput
                     type="folder"
                     defaultValue={folderName}
                     isOpen={isOpen}
@@ -155,9 +155,9 @@ export const Tree = ({
                 />
                 {isOpen && (
                     <>
-                        {folderContents === undefined && <LoadingRow level={level + 1}/>}
+                        {folderContents === undefined && <LoadingRow level={level + 1} />}
                         {folderContents?.map((subItem) => (
-                            <Tree 
+                            <Tree
                                 key={subItem._id}
                                 item={subItem}
                                 level={level + 1}
@@ -177,7 +177,7 @@ export const Tree = ({
                 level={level}
                 onClick={() => setIsOpen((value) => !value)}
                 onRename={() => setIsRenaming(true)}
-                onDelete = {() => {deleteFile({ id: item._id })}}
+                onDelete={() => { deleteFile({ id: item._id }) }}
                 onCreateFile={() => startCreating("file")}
                 onCreateFolder={() => startCreating("folder")}
             >
@@ -187,7 +187,7 @@ export const Tree = ({
                 <>
                     {folderContents === undefined && <LoadingRow level={level + 1} />}
                     {folderContents?.map((subItem) => (
-                        <Tree 
+                        <Tree
                             key={subItem._id}
                             item={subItem}
                             level={level + 1}

@@ -19,10 +19,16 @@ function parseGithubUrl(url: string) {
 }
 
 export async function POST(request: Request) {
-    const { userId } = await auth();
+    const { userId, has } = await auth();
 
     if (!userId) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const hasPro = has({ plan: "pro" })
+
+    if (!hasPro) {
+        return NextResponse.json({ error: "You need to be on the Pro plan to import a repository." }, { status: 403 });
     }
 
     const body = await request.json();
