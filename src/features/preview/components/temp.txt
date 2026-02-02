@@ -1,0 +1,37 @@
+﻿"use client";
+
+import { z } from "zod";
+import { useState } from "react";
+import { useForm } from "@tanstack/react-form";
+import { SettingsIcon } from "lucide-react";
+import { useUpdateProjectSettings } from "@/features/projects/hooks/use-projects";
+import { Button } from "@/components/ui/button";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
+import { Field, FieldLabel, FieldDescription } from "@/components/ui/field";
+import { api } from "../../../../convex/_generated/api";
+import { Doc, Id } from "../../../../convex/_generated/dataModel";
+import { useMutation } from "convex/react";
+
+const formSchema = z.object({
+    installCommand: z.string().default("npm install"),
+    devCommand: z.string().default("npm run dev"),
+});
+
+interface PreviewSettingsPopoverProps {
+    projectId: Id<"projects">;
+    settings: Doc<"projects">["settings"];
+    onSave?: () => void;
+};
+
+export const PreviewSettingsPopover = ({ projectId, settings, onSave }: PreviewSettingsPopoverProps) => {
+    const [open, setOpen] = useState(false);
+    const updateSettings = useMutation(api.projects.updateSettings);
+
+
+
+};

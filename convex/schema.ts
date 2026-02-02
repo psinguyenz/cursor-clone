@@ -3,7 +3,7 @@ import { v } from "convex/values";
 
 export default defineSchema({
     projects: defineTable({
-        name:v.string(),
+        name: v.string(),
         ownerId: v.string(),
         updatedAt: v.number(),
         importStatus: v.optional(
@@ -24,8 +24,17 @@ export default defineSchema({
             ),
         ),
         exportRepoUrl: v.optional(v.string()),
+        settings: v.optional(
+            v.object({
+                installCommand: v.optional(v.string()), // instruct the webcontainer to install dependencies
+                devCommand: v.optional(v.string()), // instruct the webcontainer to run the dev script
+            })
+        ),
     }).index("by_owner", ["ownerId"]),
 
+    // when you load files, you basically get a flat array of objects
+    // each object has a projectId, a parentId, a name, a type, a content, a storageId, and an updatedAt
+    // [{ projectId: "1", parentId: "123", name: "file1.tsx", type: "file", content: "console.log('hello world')", storageId: "1", updatedAt: 1 }]
     files: defineTable({
         projectId: v.id("projects"),
         parentId: v.optional(v.id("files")), // each file can have a parent file or not
@@ -44,7 +53,7 @@ export default defineSchema({
         title: v.string(),
         updatedAt: v.number(),
     }).index("by_project", ["projectId"]),
-        
+
     messages: defineTable({
         conversationId: v.id("conversations"),
         projectId: v.id("projects"),

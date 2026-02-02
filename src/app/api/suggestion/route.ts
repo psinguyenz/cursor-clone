@@ -1,14 +1,15 @@
 import { generateText, Output, tool } from "ai";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+// import { openai } from "@ai-sdk/openai";
 import { google } from "@ai-sdk/google"; // Use this if you prefer Gemini
 import { auth } from "@clerk/nextjs/server";
 
 // 1. Define your schema
 const suggestionSchema = z.object({
-  suggestion: z.string().describe(
-    "The code to insert at cursor, or empty string if no completion needed"
-  ),
+    suggestion: z.string().describe(
+        "The code to insert at cursor, or empty string if no completion needed"
+    ),
 });
 
 const SUGGESTION_PROMPT = `You are a code suggestion assistant.
@@ -47,26 +48,26 @@ export async function POST(request: Request) {
 
         if (!userId) {
             return NextResponse.json(
-                {error: "Unauthorized"},
-                {status: 403},
+                { error: "Unauthorized" },
+                { status: 403 },
             );
         }
 
         const {
-          fileName,
-          code,
-          currentLine,
-          previousLines,
-          textBeforeCursor,
-          textAfterCursor,
-          nextLines,
-          lineNumber,
+            fileName,
+            code,
+            currentLine,
+            previousLines,
+            textBeforeCursor,
+            textAfterCursor,
+            nextLines,
+            lineNumber,
         } = await request.json();
-        
+
         if (!code) {
             return NextResponse.json(
-                {error: "Code is requried"},
-                {status: 400}
+                { error: "Code is requried" },
+                { status: 400 }
             );
         }
 
@@ -86,12 +87,12 @@ export async function POST(request: Request) {
             prompt,
         });
 
-        return NextResponse.json({ suggestion: output.suggestion})
+        return NextResponse.json({ suggestion: output.suggestion })
     } catch (error) {
         console.error("Suggestion error: ", error);
         return NextResponse.json(
-            {error: "Failed to generate suggestion"},
-            {status: 500}
+            { error: "Failed to generate suggestion" },
+            { status: 500 }
         );
     }
 }
