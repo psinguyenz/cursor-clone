@@ -58,8 +58,6 @@ export const createReadFileTool = ({ internalKey }: ReadFileToolOptions) => {
             } catch (error) {
                 return `Error reading files: ${error instanceof Error ? error.message : "Unknown error"}`;
             }
-
         }
-
     })
 }

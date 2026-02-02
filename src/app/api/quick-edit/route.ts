@@ -1,4 +1,5 @@
 import { google } from "@ai-sdk/google";
+// import { openai } from "@ai-sdk/openai";
 import { generateText, Output } from "ai";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -10,8 +11,8 @@ const quickEditSchema = z.object({
         "The edited version of the selected code based on the instruction"
     ),
 });
-  
-const URL_REGEX = /https?:\/\/[^\s>\]]+/g; 
+
+const URL_REGEX = /https?:\/\/[^\s>\]]+/g;
 
 const QUICK_EDIT_PROMPT = `You are a code editing assistant. Edit the selected code based on the user's instruction.
 
@@ -44,22 +45,22 @@ export async function POST(request: Request) {
 
         if (!userId) {
             return NextResponse.json(
-                {error: "Unauthorized"},
-                {status: 403},
+                { error: "Unauthorized" },
+                { status: 403 },
             );
         }
 
         if (!selectedCode) {
             return NextResponse.json(
-                {error: "Selected code is required"},
-                {status: 400},
+                { error: "Selected code is required" },
+                { status: 400 },
             );
         }
-        
+
         if (!instruction) {
             return NextResponse.json(
-                {error: "Instruction is requried"},
-                {status: 400}
+                { error: "Instruction is requried" },
+                { status: 400 }
             );
         }
 
@@ -97,19 +98,19 @@ export async function POST(request: Request) {
             .replace("{fullCode}", fullCode || "")
             .replace("{instruction}", instruction)
             .replace("{documentation}", documentationContext);
-            
+
         const { output } = await generateText({
-            model: google("gemini-2.5-flash"),
+            model: google("gemini-2.5-flash-lite"),
             output: Output.object({ schema: quickEditSchema }),
             prompt,
         });
 
-        return NextResponse.json({ editedCode: output.editedCode})
-    } catch(error) {
+        return NextResponse.json({ editedCode: output.editedCode })
+    } catch (error) {
         console.error("Edit error:", error);
         return NextResponse.json(
-            {error: "Failed to generate edit"},
-            {status: 500}
+            { error: "Failed to generate edit" },
+            { status: 500 }
         );
     }
 };

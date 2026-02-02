@@ -21,7 +21,7 @@ export const demoGenerate = inngest.createFunction(
           // this function from firecrawl doc, you can even add search method
           const result = await firecrawl.scrape(
             url,
-            { formats: ["markdown"]},
+            { formats: ["markdown"] },
           );
           return result.markdown ?? null;
         })
@@ -29,27 +29,27 @@ export const demoGenerate = inngest.createFunction(
       return results.filter(Boolean).join("\n\n"); // filter the null-unsuccessful ones
     });
 
-    const finalPrompt = scrapedContent 
-      ? `Context:\n${scrapedContent}\n\nQuestion: ${prompt}` 
+    const finalPrompt = scrapedContent
+      ? `Context:\n${scrapedContent}\n\nQuestion: ${prompt}`
       : prompt;
 
     await step.run("generate-text", async () => {
-        return await generateText({
-            model: google('gemini-2.5-flash'),
-            prompt: finalPrompt,
-            experimental_telemetry: {
-              // sentry api usage tracking
-              isEnabled: true,
-              recordInputs: true,
-              recordOutputs: true,
-            },
-        });
+      return await generateText({
+        model: google('gemini-2.5-flash-lite'),
+        prompt: finalPrompt,
+        experimental_telemetry: {
+          // sentry api usage tracking
+          isEnabled: true,
+          recordInputs: true,
+          recordOutputs: true,
+        },
+      });
     })
   },
 );
 
 export const demoError = inngest.createFunction(
-  { id: "demo-error"},
+  { id: "demo-error" },
   { event: "demo/error" },
   async ({ step }) => {
     await step.run("fail", async () => {

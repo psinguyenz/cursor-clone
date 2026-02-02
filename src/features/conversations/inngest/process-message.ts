@@ -5,7 +5,7 @@ import { convex } from "@/lib/convex-client";
 import { api } from "../../../../convex/_generated/api";
 import { CODING_AGENT_SYSTEM_PROMPT, TITLE_GENERATOR_SYSTEM_PROMPT } from "./constants";
 import { DEFAULT_CONVERSATION_TITLE } from "../constants";
-import { createAgent, createNetwork, gemini } from "@inngest/agent-kit";
+import { createAgent, createNetwork, openai } from "@inngest/agent-kit"; // use openai for inngest agent kit, gemini only works for ai/sdk
 import { createReadFileTool } from "./tools/read-files";
 import { createListFilesTool } from "./tools/list-files";
 import { createUpdateFileTool } from "./tools/update-files";
@@ -113,9 +113,9 @@ export const processMessage = inngest.createFunction(
             const titleAgent = createAgent({
                 name: "title-generator",
                 system: TITLE_GENERATOR_SYSTEM_PROMPT,
-                model: gemini({
-                    model: "gemini-2.5-flash-lite",
-                    apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY, // need this to run
+                model: openai({
+                    model: "gpt-5-nano",
+                    apiKey: process.env.OPENAI_API_KEY, // need this to run
                 }),
             });
 
@@ -151,9 +151,9 @@ export const processMessage = inngest.createFunction(
             description: "An expert AI coding assistant",
             // using prompt repetition to avoid the agent from hallucinating (Google Reseach '25)
             system: systemPrompt + "\n\n" + systemPrompt,
-            model: gemini({
-                model: "gemini-2.5-flash",
-                apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY, // need this to run
+            model: openai({
+                model: "gpt-5-nano",
+                apiKey: process.env.OPENAI_API_KEY, // need this to run
             }),
             tools: [
                 createReadFileTool({ internalKey }),
