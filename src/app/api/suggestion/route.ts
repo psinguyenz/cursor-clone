@@ -42,6 +42,26 @@ Follow these steps IN ORDER:
 Your suggestion is inserted immediately after the cursor, so never suggest code that's already in the file.
 </instructions>`;
 
+/**
+ * Handle POST requests to generate a code insertion suggestion from editor context.
+ *
+ * Expects the request body to be a JSON object with:
+ * - fileName: The name of the file being edited.
+ * - code: The full file contents.
+ * - currentLine: The text of the line containing the cursor.
+ * - previousLines: Text of the lines before the current line (optional).
+ * - textBeforeCursor: Text immediately before the cursor on the current line.
+ * - textAfterCursor: Text immediately after the cursor on the current line.
+ * - nextLines: Text of the lines following the current line (optional).
+ * - lineNumber: The 1-based line number of the current line.
+ *
+ * @param request - The incoming HTTP request whose JSON body contains the editor context.
+ * @returns A JSON response:
+ * - On success (200): { suggestion: string } where `suggestion` is the code to insert (or an empty string if no insertion is needed).
+ * - On authentication failure (403): { error: string }.
+ * - On bad request due to missing `code` (400): { error: string }.
+ * - On internal error (500): { error: string }.
+ */
 export async function POST(request: Request) {
     try {
         const { userId } = await auth();

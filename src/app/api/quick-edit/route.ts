@@ -38,6 +38,18 @@ Do not include any explanations or comments unless requested.
 If the instruction is unclear or cannot be applied, return the original code unchanged.
 </instructions>`;
 
+/**
+ * Handle a POST request to generate a quick code edit based on a selected code snippet and an instruction.
+ *
+ * Accepts a JSON body with `selectedCode`, optional `fullCode`, and `instruction`. If the instruction contains HTTP/HTTPS URLs,
+ * the handler scrapes Markdown documentation from those URLs and injects it into the AI prompt. It calls the AI model to
+ * produce an edited version of the selected code and returns that result.
+ *
+ * @param request - Incoming HTTP request whose JSON body must include `selectedCode` (string), `instruction` (string),
+ *                  and may include `fullCode` (string).
+ * @returns A JSON object with either `{ editedCode: string }` on success or `{ error: string }` on failure. Responds with
+ *          status 403 if the user is not authenticated, 400 for missing required fields, and 500 for generation failures.
+ */
 export async function POST(request: Request) {
     try {
         const { userId } = await auth();
